@@ -1,0 +1,83 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#fffefefe"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:layout_margin="20dp"
+        android:id="@+id/message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text="@string/welcome_message"
+        android:textSize="18sp" />
+
+
+    <TableLayout
+        android:layout_below="@+id/message"
+        android:layout_above="@+id/reset_button"
+        android:layout_centerInParent="true"
+        android:id="@+id/tic_tac_toe_board"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:stretchColumns="*">
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            >
+
+            <include layout="@layout/cell_layout" />
+            <include layout="@layout/cell_layout" />
+            <include layout="@layout/cell_layout_2" />
+
+
+        </TableRow>
+
+        <View android:layout_width="match_parent"
+            android:layout_height="2px"
+            android:background="#000000"/>
+
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            >
+
+            <include layout="@layout/cell_layout" />
+            <include layout="@layout/cell_layout" />
+            <include layout="@layout/cell_layout_2" />
+
+        </TableRow>
+
+        <View android:layout_width="match_parent"
+            android:layout_height="2px"
+            android:background="#000000"/>
+
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            >
+
+            <include layout="@layout/cell_layout" />
+            <include layout="@layout/cell_layout" />
+            <include layout="@layout/cell_layout_2" />
+
+        </TableRow>
+    </TableLayout>
+
+    <Button
+        android:id="@+id/reset_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:text="Reset"
+        android:visibility="invisible" />
+</RelativeLayout>

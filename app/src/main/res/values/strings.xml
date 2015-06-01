@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Tic Tac Toe</string>
+    <string name="player_lost">You lost!</string>
+    <string name="tie_game">Tie game</string>
+    <string name="welcome_message">Welcome! Please select a square to begin</string>
+    <string name="reset_button">Reset game</string>
+</resources>
