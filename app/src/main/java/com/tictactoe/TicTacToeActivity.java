@@ -2,6 +2,7 @@ package com.tictactoe;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 
 public class TicTacToeActivity extends AppCompatActivity {
 
+    private static final String TAG = TicTacToeActivity.class.getName();
     public static final char O_MARK = 'O';
     public static final char X_MARK = 'X';
     public static final char EMPTY = '\0';
@@ -86,6 +88,8 @@ public class TicTacToeActivity extends AppCompatActivity {
 
         //Clear messages
         message.setText("");
+
+        Log.d(TAG, String.format("Updating: %d %d", locX, locY));
 
         //Update the game state
         board[locX][locY] = isPlayer ? O_MARK : X_MARK;

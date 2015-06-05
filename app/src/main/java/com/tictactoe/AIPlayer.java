@@ -12,6 +12,21 @@ public class AIPlayer {
     public static final char EMPTY = '\0';
     public static final char O_MARK = 'O';
     public static final char X_MARK = 'X';
+    public static final String TYPE_ROWS = "ROWS";
+    public static final String TYPE_COLS = "COLS";
+    public static final String TYPE_DIAG = "DIAG";
+    public static final String TYPE_ALT_DIAG = "ALT_DIAG";
+
+    public static final int[][][] LINE_CHECK = {
+            {new int[] {0,0}, new int[]{0,1},new int[]{0,2}},
+            {new int[] {1,0}, new int[]{1,1},new int[]{1,2}},
+            {new int[] {2,0}, new int[]{2,1},new int[]{2,2}},
+            {new int[] {0,0}, new int[]{1,0},new int[]{2,0}},
+            {new int[] {0,1}, new int[]{1,1},new int[]{2,1}},
+            {new int[] {0,2}, new int[]{1,2},new int[]{2,2}},
+            {new int[] {0,0}, new int[]{1,1},new int[]{2,2}},
+            {new int[] {0,2}, new int[]{1,1},new int[]{2,0}}
+    };
 
     private char[][] board;
 
@@ -80,69 +95,64 @@ public class AIPlayer {
     private int evaluate() {
         int score = 0;
 
-        score += evaluateLine(0, 0, 0, 1, 0, 2);
-        score += evaluateLine(1, 0, 1, 1, 1, 2);
-        score += evaluateLine(2, 0, 2, 1, 2, 2);
-        score += evaluateLine(0, 0, 1, 0, 2, 0);
-        score += evaluateLine(0, 1, 1, 1, 2, 1);
-        score += evaluateLine(0, 2, 1, 2, 2, 2);
-        score += evaluateLine(0, 0, 1, 1, 2, 2);
-        score += evaluateLine(0, 2, 1, 1, 2, 0);
+        for (int x = 0; x < 8; x++) {
+            for (int y = 0; y < 3; y++) {
+                score += evaluateLine(new int[][] {LINE_CHECK[x][0], LINE_CHECK[x][1], LINE_CHECK[x][2]});
+            }
+        }
+
         return score;
     }
 
-    private int evaluateLine(int row1, int col1, int row2, int col2, int row3, int col3) {
+    private int evaluateLine(int[][] coords) {
         int score = 0;
 
-        if (board[row1][col1] == X_MARK) {
-            score = 1;
-        } else if (board[row1][col1] == O_MARK) {
-            score = -1;
-        }
-
-        if (board[row2][col2] == X_MARK) {
-            if (score == 1) {
-                score = 10;
-            } else if (score == -1) {
-                return 0;
-            } else {
-                score = 1;
-            }
-        } else if (board[row2][col2] == O_MARK) {
-            if (score == -1) {
-                score = -10;
-            } else if (score == 1) {
-                return 0;
-            } else {
-                score = -1;
-            }
-        }
-
-        if (board[row3][col3] == X_MARK) {
-            if (score > 0) {
-                score *= 10;
-            } else if (score < 0) {
-                return 0;
-            } else {
-                score = 1;
-            }
-        } else if (board[row3][col3] == O_MARK) {
-            if (score < 0) {
-                score *= 10;
-            } else if (score > 1) {
-                return 0;
-            } else {
-                score = -1;
+        for (int i = 0; i < 3; i++) {
+            if (board[coords[i][0]][coords[i][1]] == X_MARK) {
+                if (score > 0) {
+                    score *= 10;
+                } else if (score < 0) {
+                    score = 0;
+                } else {
+                    score = 1;
+                }
+            } else if (board[coords[i][0]][coords[i][1]] ==O_MARK) {
+                if (score < 0) {
+                    score *= 10;
+                } else if (score > 1) {
+                    score = 0;
+                } else {
+                    score = -1;
+                }
             }
         }
         return score;
     }
 
     public static boolean hasWon(char[][] board, char player) {
+
+        if (checkRowsOrCols(board, player, TYPE_ROWS)
+                || checkRowsOrCols(board, player, TYPE_COLS)
+                || checkDiagonals(board, player, TYPE_DIAG)
+                || checkDiagonals(board, player, TYPE_ALT_DIAG)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private static boolean checkRowsOrCols(char[][] board, char player, String type) {
+        char mark = EMPTY;
         for (int x = 0; x < 3; x++) {
             int total = 0;
             for (int y = 0; y < 3; y++) {
-                if (board[x][y] == player) {
+                if (TYPE_ROWS.equalsIgnoreCase(type)) {
+                    mark = board[x][y];
+                } else if (TYPE_COLS.equalsIgnoreCase(type)){
+                    mark = board[y][x];
+                }
+
+                if (mark == player) {
                     total++;
                 }
             }
@@ -150,43 +160,26 @@ public class AIPlayer {
                 return true;
             }
         }
+        return false;
+    }
 
-        for (int y = 0; y < 3; y++) {
-            int total = 0;
-            for (int x = 0; x < 3; x++) {
-                if (board[x][y] == player) {
-                    total++;
-                }
-            }
-            if (total >= 3) {
-                return true;
-            }
-        }
-
+    private static boolean checkDiagonals(char[][] board, char player, String type) {
+        char mark;
         int total = 0;
         for (int x = 0; x < 3; x++) {
             for (int y = 0; y < 3; y++) {
-                if (x == y && board[x][y] == player) {
-                    total++;
+                mark = board[x][y];
+                if (mark == player) {
+                    if ((TYPE_DIAG.equalsIgnoreCase(type) && x == y)
+                            || (TYPE_ALT_DIAG.equalsIgnoreCase(type) && x + y == 2)) {
+                        total++;
+                    }
                 }
             }
         }
         if (total >= 3) {
             return true;
         }
-
-        total = 0;
-        for (int x = 0; x < 3; x++) {
-            for (int y = 0; y < 3; y++) {
-                if (x + y == 2 && board[x][y] == player) {
-                    total++;
-                }
-            }
-        }
-        if (total >= 3) {
-            return true;
-        }
-
         return false;
     }
 }
